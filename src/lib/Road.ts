@@ -1,22 +1,19 @@
 import { lerp } from '../utils';
 
-interface IRoad {
+interface Road {
   x: number;
   width: number;
   laneCount: number;
+  borders: [Point, Point][];
 }
 
-export default class Road implements IRoad {
-  x;
-  width;
-  laneCount;
+class Road {
   left;
   right;
   top;
   bottom;
-  borders;
 
-  constructor(x: number, width: number, laneCount: number = 6) {
+  constructor(x: number, width: number, laneCount: number = 3) {
     this.x = x;
     this.width = width;
     this.laneCount = laneCount;
@@ -70,3 +67,5 @@ export default class Road implements IRoad {
     });
   }
 }
+
+export default Road;

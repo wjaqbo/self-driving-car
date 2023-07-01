@@ -1,16 +1,11 @@
-interface IControls {
+interface Controls {
   forward: boolean;
   left: boolean;
   right: boolean;
   reverse: boolean;
 }
 
-export default class Controls implements IControls {
-  forward;
-  left;
-  right;
-  reverse;
-
+class Controls {
   constructor() {
     this.forward = false;
     this.left = false;
@@ -55,3 +50,5 @@ export default class Controls implements IControls {
     };
   }
 }
+
+export default Controls;
