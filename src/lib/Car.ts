@@ -20,35 +20,51 @@ class Car {
   friction;
   angle;
 
-  constructor(x: number, y: number, width: number, height: number) {
+  constructor(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    controlType: string,
+    maxSpeed = 10
+  ) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.maxSpeed = maxSpeed;
 
-    this.controls = new Controls();
+    this.controls = new Controls(controlType);
     this.acceleration = 0.1;
     this.speed = 0;
-    this.maxSpeed = 20;
     this.friction = 0.05;
     this.angle = 0;
     this.damaged = false;
 
-    this.sensor = new Sensor(this);
+    if (controlType !== 'DUMMY') {
+      this.sensor = new Sensor(this);
+    }
   }
 
-  update(roadBorders: [Point, Point][]) {
+  update(roadBorders: [Point, Point][], traffic: Car[]) {
     if (!this.damaged) {
       this.#move();
       this.polygon = this.#createPolygon();
-      this.damaged = this.#assessDamage(roadBorders)!;
+      this.damaged = this.#assessDamage(roadBorders, traffic)!;
     }
-    this.sensor.update(roadBorders);
+    if (this.sensor) {
+      this.sensor.update(roadBorders, traffic);
+    }
   }
 
-  #assessDamage(roadBorders: [Point, Point][]) {
+  #assessDamage(roadBorders: [Point, Point][], traffic: Car[]) {
     for (let i = 0; i < roadBorders.length; i++) {
       if (polysIntersect(this.polygon, roadBorders[i])) {
+        return true;
+      }
+    }
+    for (let i = 0; i < traffic.length; i++) {
+      if (polysIntersect(this.polygon, traffic[i].polygon)) {
         return true;
       }
     }
@@ -117,11 +133,11 @@ class Car {
     this.y -= Math.cos(this.angle) * this.speed;
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, color: string) {
     if (this.damaged) {
       ctx.fillStyle = 'gray';
     } else {
-      ctx.fillStyle = 'black';
+      ctx.fillStyle = color;
     }
     ctx.beginPath();
     ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
@@ -129,7 +145,9 @@ class Car {
       ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
     }
     ctx.fill();
-    this.sensor.draw(ctx);
+    if (this.sensor) {
+      this.sensor.draw(ctx);
+    }
   }
 }
 
