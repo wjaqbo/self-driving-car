@@ -10,8 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
   </head>
-  <body>
-    <canvas id="my-canvas" class="mx-auto bg-gray-400"></canvas>
+  <body class="flex justify-center items-center">
+    <canvas id="car-canvas" class="bg-gray-400"></canvas>
+    <div class="flex flex-col justify-center items-center">
+      <button id="save-btn">save</button>
+      <button id="discard-btn">discard</button>
+    </div>
+    <canvas id="network-canvas" class="bg-gray-900"></canvas>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
